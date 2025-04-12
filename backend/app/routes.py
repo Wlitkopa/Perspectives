@@ -1,6 +1,8 @@
 
 from flask import Blueprint, jsonify, request
 from app.models import *
+from app.extensions import db
+
 
 api = Blueprint('api', __name__)
 
