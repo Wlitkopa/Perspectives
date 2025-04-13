@@ -1,7 +1,7 @@
 from flask import Flask
-from config import Config
-from app.extensions import db
-from app.routes import api
+from backend.config import Config
+from backend.app.extensions import db
+from backend.app.routes import api
 
 def create_app():
     app = Flask(__name__)
