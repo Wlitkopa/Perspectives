@@ -1,8 +1,8 @@
 
 from flask import Blueprint, jsonify, request
-from backend.app.models import *
-from backend.app.extensions import db
-from llm_api import *
+from app.models import *
+from app.extensions import db
+import app.llm_api
 
 api = Blueprint('api', __name__)
 
@@ -15,13 +15,13 @@ def create_prompt_and_generate_posts():
     data = request.json
     image = data.get('image')
     text = data.get('text')
-    tags = data.get('tags', [])
+    regions = data.get('regions', [])
 
-    new_prompt = Prompt(image=image, text=text, tags=tags)
+    new_prompt = Prompt(image=image, text=text)
     db.session.add(new_prompt)
     db.session.commit()
 
-
+    app.llm_api.generate_posts(new_prompt, regions)
 
     return jsonify({
         'prompt_id': new_prompt.id
