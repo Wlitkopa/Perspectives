@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify, request
 from app.models import *
 from app.extensions import db
 import app.llm_api
+import json
 
 api = Blueprint('api', __name__)
 
@@ -12,10 +13,10 @@ api = Blueprint('api', __name__)
 # ENDPOINT 1: POST /posts
 @api.route('/prompts', methods=['POST'])
 def create_prompt_and_generate_posts():
-    data = request.json
+    data = request.form
     image = data.get('image')
     text = data.get('text')
-    regions = data.get('regions', [])
+    regions = json.loads(data.get('locations', "[]"))
 
     new_prompt = Prompt(image=image, text=text)
     db.session.add(new_prompt)

@@ -1,0 +1,66 @@
+/* General styling for the page */
+.prompt-page {
+  padding: 20px;
+  background: linear-gradient(to bottom, #f0f4f8, #d9e2ec); /* Subtle gradient background */
+  min-height: 100vh; /* Ensure the page takes up full height */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Styling for the header */
+.prompt-page h1 {
+  font-size: 2.5rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Slider container styling */
+.posts-slider {
+  position: relative;
+  width: 100%;
+  max-width: 1200px; /* Limit slider width for better layout */
+  overflow: hidden; /* Hide overflowing tiles */
+}
+
+.slider-container {
+  display: flex;
+}
+
+.slider {
+  display: flex;
+  transition: transform 0.5s ease-in-out; /* Smooth sliding */
+}
+
+.post-tile {
+  flex: 0 0 calc((100% - (2 * 15px)) / 3); /* Adjust width to fit three tiles with spacing */
+  box-sizing: border-box;
+  padding: 20px; /* Add padding inside tiles */
+  margin-right: 15px; /* Add spacing between tiles horizontally */
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Ensure images inside tiles are responsive */
+.post-image {
+  max-width: calc(100% - 30px);
+}
+
+/* Navigation buttons */
+.slider-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* Add spacing between tiles and navigation */
+}
+
+.slider-controls button {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin: 0px;
+}

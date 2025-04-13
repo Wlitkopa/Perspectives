@@ -2,37 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link, useLocation, useParams } from 'react-router-dom';  // Dodajemy useLocation
 import './App.css';
 import axios from "axios";
-// Przykładowa lista wpisów w formacie JSON
-const promptsData = [
-  {
-    id: 1,
-    text: 'Opis pierwszego prompta. Lorem ipsum dolor sit amet.',
-    engText: 'Description of the first prompt. Lorem ipsum dolor sit amet.',
-    image: 'https://example.com/image1.jpg',
-    culture: 'Nordycka',
-  },
-  {
-    id: 2,
-    text: 'Opis drugiego prompta. Nulla facilisi.',
-    engText: 'Description of the second prompt. Nulla facilisi.',
-    image: 'https://example.com/image2.jpg',
-    culture: 'Słowiańska',
-  },
-  {
-    id: 3,
-    text: 'Opis trzeciego prompta. Vivamus elementum erat.',
-    engText: 'Description of the third prompt. Vivamus elementum erat.',
-    image: 'https://example.com/image3.jpg',
-    culture: 'Egipska',
-  },
-  {
-    id: 4,
-    text: 'Opis czwartego prompta. Sed ullamcorper ligula.',
-    engText: 'Description of the fourth prompt. Sed ullamcorper ligula.',
-    image: 'https://example.com/image4.jpg',
-    culture: 'Celtycka',
-  },
-];
+import './PromptPage.css';
 
 
 // Komponent reprezentujący nagłówek (widoczny na wszystkich stronach)
@@ -41,7 +11,7 @@ function Header() {
 
   return (
     <div className="header">
-      <h1>9 Światów</h1>
+      <h1><a href="/">Perspectives</a></h1>
       {/* Pokazuj przycisk "Dodaj" tylko na stronie głównej */}
       {location.pathname === '/' && (
         <Link to="/prompt/new" className="add-prompt-button">
@@ -54,11 +24,19 @@ function Header() {
 
 // Komponent reprezentujący stronę główną (lista promptów)
 function HomePage() {
-  const [prompts, setprompts] = useState([]);
+  const [prompts, setPrompts] = useState([]);
 
   useEffect(() => {
-    // Możesz zamienić ten kod na fetch, aby pobrać dane z zewnętrznego źródła
-    setprompts(promptsData);
+    const fetchPrompts = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/prompts');
+        setPrompts(response.data); // Assuming the backend returns an array of prompts
+      } catch (error) {
+        console.error('Error fetching prompts:', error);
+      }
+    };
+
+    fetchPrompts();
   }, []);
 
   return (
@@ -68,7 +46,7 @@ function HomePage() {
         {prompts.map((prompt) => (
           <div key={prompt.id} className="prompt-box">
             <Link to={`/prompt/${prompt.id}`} className="prompt-title">
-              <h2>{prompt.id}. {prompt.text.slice(0, 20)}{prompt.text.length > 20 ? '...' : ''}</h2>
+              <h2>{prompt.id}. {prompt.text.slice(0, 60)}{prompt.text.length > 60 ? '...' : ''}</h2>
             </Link>
           </div>
         ))}
@@ -80,38 +58,82 @@ function HomePage() {
 
 // Komponent reprezentujący stronę pojedynczego prompta
 function PromptPage() {
-  const { id } = useParams();  // Zamiast match.params, używamy useParams
-  const prompt = promptsData.find((p) => p.id === parseInt(id));
+  const { id } = useParams(); // Extract the prompt ID from the URL
+  const [posts, setPosts] = useState([]); // State to store posts
+  const [loading, setLoading] = useState(true); // State to track loading
+  const [error, setError] = useState(null); // State to track errors
+  const [currentIndex, setCurrentIndex] = useState(0); // Track the current slide index
 
-  if (!prompt) {
-    return (
-      <div className="prompt-page">
-      <Header />
-      <div className="prompt-details">
-        <h2>prompt not found</h2>
-      </div>
-    </div>
-    );
-  }
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/prompts/${id}/posts`);
+        setPosts(response.data);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching posts:', err);
+        setError('Failed to load posts');
+        setLoading(false);
+      }
+    };
+    fetchPosts();
+  }, [id]);
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % posts.length); // Move to the next tile (loop back)
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev - 1 + posts.length) % posts.length); // Move to the previous tile (loop back)
+  };
 
   return (
+    <>
+    <Header />
     <div className="prompt-page">
-      <Header />
-      <div className="prompt-details">
-        <p>{prompt.text}</p>
-        <p style={{ fontStyle: 'italic', color: '#666' }}>{prompt.engText}</p>
-        {prompt.image && (
-          <img
-            src={prompt.image}
-            alt="Ilustracja do prompta"
-            style={{ maxWidth: '100%', marginTop: '20px' }}
-          />
+      <h1>Prompt Details</h1>
+      <div className="posts-slider">
+        {loading && <p>Loading posts...</p>}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {!loading && !error && (
+          <>
+            <div className="slider-container">
+              <div
+                className="slider"
+                style={{
+                  transform: `translateX(-${currentIndex * (100 / Math.min(posts.length, 3))}%)`, // Move by one tile width
+                  width: `${Math.max(posts.length * (100 / Math.min(posts.length, 3)), 100)}%`, // Total width of all tiles
+                }}
+              >
+                {posts.map((post, index) => (
+                  <div key={index} className="post-tile">
+                    <h3>{post.culture}</h3>
+                    <p>{post.text}</p>
+                    <p style={{ fontStyle: 'italic', color: '#666' }}>{post.eng_text}</p>
+                    {post.image && (
+                      <img src={post.image} alt="Post" className="post-image" />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Navigation Buttons */}
+            <div className="slider-controls">
+              <button className="prev" onClick={handlePrev}>
+                &#8592;
+              </button>
+              <button className="next" onClick={handleNext}>
+                &#8594;
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>
+    </>
   );
-  
 }
+
 
 
 function PromptNew() {
@@ -120,6 +142,7 @@ function PromptNew() {
   const [text, setText] = useState('');
   const [image, setImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [loading, setLoading] = useState(false); // State to track loading
 
   useEffect(() => {
     fetch('/areas.txt')
@@ -159,13 +182,18 @@ function PromptNew() {
     formData.append('locations', JSON.stringify(selectedLocations));
     if (image) formData.append('image', image);
 
+    setLoading(true); // Start loading
+
     try {
-      const res = await axios.post('/api/submit', formData, {
+      const res = await axios.post('http://localhost:5000/api/prompts', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log('Sukces:', res.data);
+      setLoading(false); // Stop loading
+      window.location.href = '/'; // Redirect to "/"
     } catch (err) {
       console.error('Błąd przy wysyłaniu:', err);
+      setLoading(false); // Stop loading even if there's an error
     }
   };
 
@@ -173,6 +201,11 @@ function PromptNew() {
     <div className="App">
       <Header />
       <div className="prompts-container">
+        {loading && (
+          <div className="spinner-container">
+            <div className="spinner"></div>
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="form-box">
           <textarea
             value={text}

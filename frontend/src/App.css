@@ -191,3 +191,41 @@ p {
   font-weight: bold;
   cursor: pointer;
 }
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 1000;
+}
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ccc;
+  border-top-color: #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* Remove link styling from <a> inside <h1> */
+h1 a {
+  text-decoration: none; /* Remove underline */
+  color: inherit; /* Use the color of the parent <h1> */
+}
+
+h1 a:hover {
+  text-decoration: none; /* Ensure no underline appears on hover */
+}

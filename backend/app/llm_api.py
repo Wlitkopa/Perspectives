@@ -45,8 +45,10 @@ def get_cultural_context(text, region):
 
     prompt = tokenizer(prompt_text, return_tensors="pt")
 
+    print("Generating...")
     outputs = model.generate(**prompt, max_new_tokens=200)
     generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    print(generated_text)
     return generated_text
 
 def generate_posts(prompt: Prompt, regions):
@@ -67,5 +69,6 @@ def generate_posts(prompt: Prompt, regions):
         temperature=0.8)
 
         result = json.loads(response.choices[0].message.function_call.arguments)
+        print(result)
         db.session.add(Post(prompt_id=prompt.id, text=result['text'], eng_text=result['eng_text'], culture=region, image=None))
         db.session.commit()
