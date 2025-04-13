@@ -15,7 +15,7 @@ function Header() {
       {/* Pokazuj przycisk "Dodaj" tylko na stronie głównej */}
       {location.pathname === '/' && (
         <Link to="/prompt/new" className="add-prompt-button">
-          Dodaj
+          Create
         </Link>
       )}
     </div>
@@ -56,13 +56,12 @@ function HomePage() {
   
 }
 
-// Komponent reprezentujący stronę pojedynczego prompta
 function PromptPage() {
-  const { id } = useParams(); // Extract the prompt ID from the URL
-  const [posts, setPosts] = useState([]); // State to store posts
-  const [loading, setLoading] = useState(true); // State to track loading
-  const [error, setError] = useState(null); // State to track errors
-  const [currentIndex, setCurrentIndex] = useState(0); // Track the current slide index
+  const { id } = useParams();
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -80,18 +79,25 @@ function PromptPage() {
   }, [id]);
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % posts.length); // Move to the next tile (loop back)
+    if (currentIndex < posts.length - 3) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      setCurrentIndex(0); // Loop back to start
+    }
   };
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + posts.length) % posts.length); // Move to the previous tile (loop back)
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    } else {
+      setCurrentIndex(posts.length - 3); // Loop to end
+    }
   };
 
   return (
     <>
     <Header />
     <div className="prompt-page">
-      <h1>Prompt Details</h1>
       <div className="posts-slider">
         {loading && <p>Loading posts...</p>}
         {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -101,23 +107,26 @@ function PromptPage() {
               <div
                 className="slider"
                 style={{
-                  transform: `translateX(-${currentIndex * (100 / Math.min(posts.length, 3))}%)`, // Move by one tile width
-                  width: `${Math.max(posts.length * (100 / Math.min(posts.length, 3)), 100)}%`, // Total width of all tiles
+                  transform: `translateX(-${currentIndex * 33.33}%)`,
                 }}
               >
                 {posts.map((post, index) => (
-                  <div key={index} className="post-tile">
-                    <h3>{post.culture}</h3>
-                    <p>{post.text}</p>
-                    <p style={{ fontStyle: 'italic', color: '#666' }}>{post.eng_text}</p>
-                    {post.image && (
-                      <img src={post.image} alt="Post" className="post-image" />
-                    )}
+                  <div key={index} className="post-tile-wrapper">
+                    <div className="post-tile">
+                      <h3>{post.culture}</h3>
+                      <p>{post.text}</p>
+                      {post.image && (
+                        <img src={post.image} alt="Post" className="post-image" />
+                      )}
+                      <div className="tile-translation">
+                        { post.eng_text !== post.text ?
+                        <p>{post.eng_text}</p> : <></>}
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
-            {/* Navigation Buttons */}
             <div className="slider-controls">
               <button className="prev" onClick={handlePrev}>
                 &#8592;
@@ -133,8 +142,6 @@ function PromptPage() {
     </>
   );
 }
-
-
 
 function PromptNew() {
   const [options, setOptions] = useState([]);

@@ -1,66 +1,118 @@
 /* General styling for the page */
 .prompt-page {
-  padding: 20px;
-  background: linear-gradient(to bottom, #f0f4f8, #d9e2ec); /* Subtle gradient background */
-  min-height: 100vh; /* Ensure the page takes up full height */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    padding: 20px;
+    background: linear-gradient(to bottom, #f0f4f8, #d9e2ec);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* Styling for the header */
 .prompt-page h1 {
-  font-size: 2.5rem;
-  color: #333;
-  text-align: center;
-  margin-bottom: 20px;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    font-size: 2.5rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.prompt-page h1 a {
+    text-decoration: none;
+    color: inherit;
 }
 
 /* Slider container styling */
 .posts-slider {
-  position: relative;
-  width: 100%;
-  max-width: 1200px; /* Limit slider width for better layout */
-  overflow: hidden; /* Hide overflowing tiles */
+    position: relative;
+    width: 100%;
+    max-width: 1200px; /* Increased max-width for wider tiles */
+    overflow: hidden;
 }
 
 .slider-container {
-  display: flex;
+    width: 100%;
+    overflow: hidden;
 }
 
 .slider {
-  display: flex;
-  transition: transform 0.5s ease-in-out; /* Smooth sliding */
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 100%;
 }
 
+/* Wrapper for tile and translation */
+.post-tile-wrapper {
+    flex: 0 0 33.33%;
+    padding: 0 15px;
+    box-sizing: border-box;
+    width: 33.33%; /* Explicit width */
+}
+
+/* Tile styling */
 .post-tile {
-  flex: 0 0 calc((100% - (2 * 15px)) / 3); /* Adjust width to fit three tiles with spacing */
-  box-sizing: border-box;
-  padding: 20px; /* Add padding inside tiles */
-  margin-right: 15px; /* Add spacing between tiles horizontally */
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 25px; /* Increased padding */
+    margin-bottom: 10px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    height: 100%;
+    min-width: 250px; /* Minimum width for each tile */
+    width: 100%; /* Take full width of wrapper */
+}
+
+.post-tile h3 {
+    font-size: 20px; /* Larger font size */
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.post-tile p {
+    margin-top: 10px;
+    font-size: 16px; /* Increased font size */
+    line-height: 1.5; /* Improved line height */
 }
 
 /* Ensure images inside tiles are responsive */
 .post-image {
-  max-width: calc(100% - 30px);
+    max-width: 100%;
+    height: auto;
+    margin: 10px 0;
 }
 
-/* Navigation buttons */
+/* Styling for English translation below each tile */
+.tile-translation p {
+    font-size: 14px;
+    color: #777;
+    margin-top: 10px;
+    text-align: center;
+    padding: 0 10px;
+}
+
+/* Navigation buttons styling */
 .slider-controls {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px; /* Add spacing between tiles and navigation */
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
 }
 
 .slider-controls button {
-  background-color: #333;
-  color: white;
-  border: none;
-  padding: 10px;
-  margin: 0px;
+    background-color: #333;
+    color: white;
+    border: none;
+    width: 45px; /* Larger buttons */
+    height: 45px; /* Larger buttons */
+    margin: 0 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px; /* Larger arrow size */
+    transition: background-color 0.3s ease;
+}
+
+.slider-controls button:hover {
+    background-color: #555;
 }
